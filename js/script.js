@@ -26,11 +26,68 @@ const filterButtons = document.querySelectorAll(".filter-btn");
 
 // Función para renderizar las tarjetas 
 function renderDw(genero) {
-    let dwemiAToRender = [];
-    if (genero === "all") {
-        dwemiAToRender = dwemiA;
-    } else {
-        dwemiAToRender = dwemiA.filter(DwemiA => DwemiA.genero === genero);
+    const dwemiAToRender = genero === "all"
+        ? dwemiA
+        : dwemiA.filter(dw => dw.genero === genero);
+
+    // Limpia ambos contenedores porque el HTML actual repite el mismo id.
+    document.querySelectorAll("#Autos-container").forEach(container => {
+        container.innerHTML = "";
+    });
+
+    if (dwemiAToRender.length === 0) {
+        dwemiAContainer.innerHTML = '<p class="text-center w-100">No hay disponibles para esta categoría.</p>';
+        return;
     }
- }
+
+    // Crea y agrega las tarjetas
+    dwemiAToRender.forEach(dw => {
+        const cardHtml = `
+            <figure class="Nuestros-autos-card" data-gender="${dw.genero}">
+                <img src="${dw.image}" alt=" Aurea automobiles vende, nombre: ${dw.name}">
+                <figcaption>
+                ${dw.name}
+            </figcaption>
+                <div class="card-description">
+                    <p>${dw.description}</p>
+                </div>
+            </figure>
+        `;
+        dwemiAContainer.insertAdjacentHTML("beforeend", cardHtml);
+    });
+}
+
+// Agrega event listeners a los botones de filtro
+filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        const genero = button.dataset.category;
+
+
+        // Remueve la clase 'active' de todos los botones
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        // Agrega la clase 'active' al botón clickeado
+        button.classList.add("active");
+        
+        // Renderiza las tarjetas con el filtro seleccionado
+        renderDw(genero);
+    });
+});
+
+// Renderizar todos para cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+    renderDw('all');
+});
+
+
+// Función para el botón de volver al inicio
+function scrollToTop() {
+    window.scrollTo({
+        top: 0, 
+        behavior: 'smooth'
+    });
+}
+
+
+
+ 
 
